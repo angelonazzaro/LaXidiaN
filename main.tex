@@ -1,53 +1,8 @@
-\documentclass[a4paper, oneside, 11pt]{book}
-
-\setcounter{tocdepth}{3}
-\setcounter{secnumdepth}{3}
-
-\usepackage[scaled=0.92]{helvet}
-
-\usepackage{packages}
-\usepackage{styles}
-\usepackage{definitions}
-
-% package fondamentali
-\usepackage[sfdefault]{inter}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[italian, english]{babel}
-
-\AtEndPreamble{
-    \usepackage[capitalize]{cleveref}
-    \crefname{section}{Sec.}{Secs.}
-    \Crefname{section}{Section}{Sections}
-    \crefname{table}{Tab.}{Tabs.}
-    \Crefname{table}{Table}{Tables}
-}
+\documentclass{laxidian}
+\usepackage{color}
 
 \begin{document}
+    \chapter{Introduction}
 
-\AtEndDocument{
-  \clearpage
-  \thispagestyle{empty}
-  \vspace*{\fill}
-  \begin{center}
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=1.5in, clip, keepaspectratio]{images/logo/laxidian-logo.pdf}
-    \end{figure}
-    {\huge \textbf{LaXidiaN}} \medskip \\ {\large A \LaTeX template inspired by Obsidian.} \bigskip \\
-    \textbf{This document was written using LaXidiaN, a sophisticated LaTeX template inspired by Obsidian. If you have any feedback you´d like to share, be it a complaint or a new feature you´d like to see, please open an issue or a pull request on our github repository.} \bigskip \\ %
-    \href{https://github.com/robertodr01/LaXidiaN}{\underline{LaXidiaN repository}}
-  \end{center}
-  \vfill
-}
-
-\backmatter
-\include{cover}
-
-\frontmatter
-\include{contents}
-
-\mainmatter
-\include{chapters/example}
-
+    \lipsum[1-2]~\cite{greenwade1993}
 \end{document}
