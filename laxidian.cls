@@ -1,48 +1,58 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{laxidian}[2025/03/01 v1.0 Laxidian]
-\LoadClass[11pt]{book}
+\LoadClass[a4paper,english,twoside,11pt]{book}
 
-%%%% PACKAGES 
-% General 
+%%%% PACKAGES
+% General
 \RequirePackage[english]{babel} % Language support
-\RequirePackage{fancyhdr} % Customizing headers and footers 
+\RequirePackage{fancyhdr} % Customizing headers and footers
 \RequirePackage{geometry} % Setting page geometry and layout
-\RequirePackage{hyperref} % Handle hyperrlinks 
-\RequirePackage{titlesec} % Customizing chapters, sections and subsections 
+\RequirePackage{hyperref} % Handle hyperrlinks
+\RequirePackage{titlesec} % Customizing chapters, sections and subsections
 \RequirePackage{blindtext}
+\RequirePackage[acronym]{glossaries-extra}
+\setabbreviationstyle[acronym]{long-short}
 
-% Text formatting and manipulation 
+\renewcommand*{\glsnamefont}[1]{\textbf{#1}}
+\renewcommand*{\acronymfont}[1]{\textbf{#1}}
+
+\makeglossaries
+\include{glossary}
+
+% Text formatting and manipulation
 \RequirePackage{lipsum} % Testing purposes
 \RequirePackage{parskip} % Remove indentation of first paragraph
 \RequirePackage{xcolor} % Colors
 \RequirePackage{anyfontsize}
 
 % Utitilies
-\RequirePackage{soul} % Highlightning text 
-\RequirePackage{todonotes} % Better TODO notes 
-\RequirePackage{fontawesome5} % Icons 
+\RequirePackage{soul} % Highlightning text
+\RequirePackage{todonotes} % Better TODO notes
+\RequirePackage{fontawesome5} % Icons
 \RequirePackage[most]{tcolorbox} % Custom boxed environments
-\RequirePackage{mfirstuc} % Capitlize words 
+\RequirePackage{mfirstuc} % Capitlize words
 
-% Math 
-\RequirePackage[adobe-utopia]{mathdesign}
-\RequirePackage{tensor} 
-\RequirePackage{amsmath} 
+% Math
+% \RequirePackage{mathdesign}
+\RequirePackage{tensor}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
 \RequirePackage{physics}
 \RequirePackage{siunitx}
 \RequirePackage{mathtools}
 \RequirePackage{calc}
 \RequirePackage{definitions} % Custom definitions for Deep Learning
 \RequirePackage{annotate-equations}
- 
+
 % Figures, Tables, Plots and Boxes
-\RequirePackage{float} % Position float elements 
-\RequirePackage{wrapfig} % Wrapping text around figures 
-\RequirePackage{graphicx} % Including figures 
-\RequirePackage{tikz} % Graphics and diagrams 
+\RequirePackage{float} % Position float elements
+\RequirePackage{wrapfig} % Wrapping text around figures
+\RequirePackage{graphicx} % Including figures
+\RequirePackage{tikz} % Graphics and diagrams
 \RequirePackage{tikz-3dplot} % 3D support for tikz
-\RequirePackage{pgfplots} % Plots 
-\RequirePackage{caption} 
+\RequirePackage{pgfplots} % Plots
+\pgfplotsset{compat=1.18}
+\RequirePackage{caption}
 \RequirePackage{subcaption}
 \RequirePackage[amsmath]{ntheorem}
 \RequirePackage[style=0, ntheorem]{mdframed} % Theorems and definitions
@@ -55,7 +65,8 @@
 
 % Set font
 \RequirePackage[T1]{fontenc}
- 
+\RequirePackage[utf8]{inputenc}
+
 %%%%%%%%%%%%%%%%
 
 %%%% COMMANDS AND ENVS
@@ -91,30 +102,10 @@
 % Colors of hyperref
 \hypersetup{
     colorlinks=true,
-    linkcolor=purple!75,
+    linkcolor=purple!125,
     breaklinks=true,
-    citecolor=purple!75,
+    citecolor=purple,
     urlcolor=blue!75,
-}
-
-% Tcolorbox defaults
-\tcbset {
-  base/.style={
-    arc=0mm,
-    bottomtitle=0.5mm,
-    boxrule=0mm,
-    colbacktitle=blue,
-    colframe=blue,
-    coltitle=black,
-    fonttitle=\bfseries,
-    left=2.5mm,
-    leftrule=1mm,
-    right=3.5mm,
-    title={#1},
-    toptitle=0.75mm,
-    breakable,
-    enhanced
-  }
 }
 
 % Theorems and definitions
@@ -187,12 +178,12 @@
     \end{callout}
 }
 
-\newenvironment{success}[3][Tip]{
-    \begin{callout}{green}{#1}{\successicon \hspace{0.2cm} #2}
-        #3
-}{
-    \end{callout}
-}
+%\newenvironment{success}[3][Tip]{
+%    \begin{callout}{green}{#1}{\successicon \hspace{0.2cm} #2}
+%        #3
+%}{
+%    \end{callout}
+%}
 
 \newenvironment{faq}[3][Faq]{
     \begin{callout}{orange}{#1}{\faqicon \hspace{0.2cm} #2}
@@ -227,6 +218,8 @@
 \fancyhead[RE]{\bfseries\normalfont {\color{black!40}\nouppercase{\rightmark}}}
 \fancyhead[LO]{\bfseries\normalfont {\color{black!40}\nouppercase{Chapter \thechapter: \leftmark}}}
 \fancyhead[RO]{{\color{black!40}\thepage}}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
 
 % Chapter style - Alice in a Differentiable Wonderland
 \definecolor{gray75}{gray}{0.75}
@@ -234,18 +227,28 @@
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\selectfont \thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
 
 \setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{4}
 
 % Front Matter
 \AtBeginDocument {
-    \begingroup 
+    \begingroup
         \pagenumbering{roman}
+        \phantomsection
+        \addcontentsline{toc}{chapter}{Table of Contents}
         \tableofcontents
         \blankpage
-    
+
+        \phantomsection
+        \addcontentsline{toc}{chapter}{List of Figure}
         \listoffigures
         \blankpage
-        
+
+        \phantomsection
+        \addcontentsline{toc}{chapter}{List of Tables}
         \listoftables
+        \blankpage
+
+        \printglossary
         \blankpage
     \endgroup
     \mainmatter
