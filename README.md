@@ -1,7 +1,8 @@
 <p align="center">
-  <img width="250" src="https://github.com/angelonazzaro/LaXidiaN/assets/58223071/c343757d-d762-433c-801d-fe2b379647d5" />
+  <img width="250" src="https://github.com/user-attachments/assets/afe6cad5-b946-4b35-876e-bf316c262eb3" />
 </p>
 <h3 align="center">
+
  LaXidiaN
 </h3>
 <p align="center">
