@@ -1,8 +1,135 @@
 \documentclass{laxidian}
-\usepackage{color}
 
 \begin{document}
+
     \chapter{Introduction}
 
-    \lipsum[1-2]~\cite{greenwade1993}
+The \laxidian class is a custom LaTeX template designed for efficient note-taking. Its standout feature is the inclusion of callout boxes, which were inspired by the popular note-taking app Obsidian.
+
+    Special thanks go to \href{https://www.sscardapane.it/}{Simone Scardapane}, \href{https://it.linkedin.com/in/andrea-terlizzi-4ba891263}{Andrea Terlizzi} and \href{https://github.com/Jimeens}{L. R. Ximenes (Jimeens)} for making their templates publicly available, upon which this work is based.
+
+    \section{Coverpage}
+
+    In the custom \laxidian class, the cover page is highly customizable. The layout of the cover page is defined within the \texttt{$\backslash$coverpage} command, as shown below:
+
+    The components of the cover page can be customized by modifying the values of the following commands:
+
+    \begin{itemize}
+        \item \texttt{\textbackslash university}: Name of the university.
+        \item \texttt{\textbackslash department}: Name of the department.
+        \item \texttt{\textbackslash degree}: The name of the degree program.
+        \item \texttt{\textbackslash course}: The course or thesis title.
+        \item \texttt{\textbackslash authorname}: The name of the author.
+        \item \texttt{\textbackslash academicyear}: The academic year.
+    \end{itemize}
+
+    \section{The \texttt{\textbackslash divider} Command}
+
+    The \texttt{\textbackslash divider} command creates a horizontal line (or rule) across the page, typically used to separate sections of content. This command is defined as follows:
+
+    It produces a thin line that spans the entire width of the text block. To use this command, simply call \texttt{\textbackslash divider} wherever you need the line.
+
+    \divider
+
+    \section{The \texttt{\textbackslash vec} Command}
+
+    The \texttt{\textbackslash vec} command is typically used to denote vectors in mathematical notation. In the `laxidian` class, the \texttt{\textbackslash vec} command has been redefined to use the \texttt{\textbackslash boldsymbol} command, which renders vectors in bold font.
+
+    The callout environment is highly customizable. It takes the following parameters:
+
+    \begin{enumerate}
+
+        \item \texttt{<type>} of Callout:
+        This parameter determines the type of callout box you want. There are several predefined types like info, faq, tip, success, and danger. Each type corresponds to a different color and icon.
+        <type> can be one of the following:
+        \begin{itemize}
+
+            \item \texttt{info} (default color: \textcolor{blue}{blue})
+
+            \item \texttt{faq} (default color: \textcolor{orange}{orange})
+
+            \item \texttt{tip} (default color: \textcolor{cyan}{cyan})
+
+            \item \texttt{success} (default color: \textcolor{green}{green})
+
+            \item \texttt{danger} (default color: \textcolor{red}{red})
+        \end{itemize}
+
+        \item \texttt{[title]}:
+        You can specify a title for your callout box. If no title is provided, the default title is the capitalized version of the callout type.
+
+        \item \texttt{|label|}:
+        You can give each callout a unique label that you can reference elsewhere in the document using \texttt{$\backslash$ref}.
+
+    \end{enumerate}
+
+
+    \section{Callout Examples}
+
+    \begin{callout}
+        <info>
+        Some dummy text
+    \end{callout}
+
+    \begin{callout}
+        <faq>
+        Some dummy text
+    \end{callout}
+
+    \begin{callout}
+        <tip>
+        Some dummy text
+    \end{callout}
+
+    \begin{callout}
+        <success>
+        Some dummy text.
+    \end{callout}
+
+    \begin{callout}
+        <danger>
+        Some dummy text.
+    \end{callout}
+
+    \begin{callout}[This is a referencable callout]
+        |info:1|
+        This is another example of an info callout.
+    \end{callout}
+    This text refers to the callout \ref{info:1}.
+
+
+    \chapter{Mathematics}
+
+    In this template, you can define theorems and definitions. For instance:
+
+    \begin{theorem}[Pythagoras]
+        In a right-angled triangle, the square of the hypotenuse is equal to the sum of the squares of the other two sides:
+        \[
+            a^2 + b^2 = c^2
+        \]
+    \end{theorem}
+
+    \begin{definition}[Scalar Product]
+        The scalar product of two vectors \( \vec{a} \) and \( \vec{b} \) is defined as:
+        \[
+            \vec{a} \cdot \vec{b} = \sum_{i} a_i b_i
+        \]
+    \end{definition}
+
+    You can also annotate equations: \\
+    \vspace{4em}
+    \begin{equation*}
+        i \tikzmarknode{hbar}{\mathstrut\hbar} \frac{\partial}{\partial t}
+        \eqnmarkbox[blue]{Psi1}{\Psi(x, t)} = \eqnmark[red]{Hhat}{\hat{H}}
+        \eqnmarkbox[blue]{Psi2}{\Psi(x, t)}
+    \end{equation*}
+    \annotate[yshift=3em]{above}{hbar}{$\hbar = \frac{h}{2\pi}$, reduced Planck constant}
+    \annotate[yshift=1em]{above}{Hhat}{Hamilton operator}
+    \annotatetwo[yshift=-1em]{below}{Psi1}{Psi2}{Wave function}
+
+
+    \chapter{Citations}
+
+    Citation style is set to \texttt{alphabetic}. An example of a citation is: \cite{greenwade1993}.
+
 \end{document}

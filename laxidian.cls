@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{laxidian}[2025/03/01 v1.0 Laxidian]
+\ProvidesClass{laxidian}[2025/03/01 v2.0 Laxidian]
 \LoadClass[a4paper,english,twoside,11pt]{book}
 
 %%%% PACKAGES
@@ -10,7 +10,8 @@
 \RequirePackage{hyperref} % Handle hyperrlinks
 \RequirePackage{titlesec} % Customizing chapters, sections and subsections
 \RequirePackage{blindtext}
-\RequirePackage[acronym]{glossaries-extra}
+\RequirePackage{changepage}
+\RequirePackage[nomain, acronym, automake]{glossaries-extra}
 \setabbreviationstyle[acronym]{long-short}
 
 \renewcommand*{\glsnamefont}[1]{\textbf{#1}}
@@ -29,7 +30,7 @@
 \RequirePackage{soul} % Highlightning text
 \RequirePackage{todonotes} % Better TODO notes
 \RequirePackage{fontawesome5} % Icons
-\RequirePackage[most]{tcolorbox} % Custom boxed environments
+\RequirePackage[many]{tcolorbox} % Custom boxed environments
 \RequirePackage{mfirstuc} % Capitlize words
 
 % Math
@@ -72,13 +73,14 @@
 %%%% COMMANDS AND ENVS
 
 \newcommand{\blankpage}{
-      \clearpage
-      \thispagestyle{empty}
-      \null
-      \clearpage
+    \clearpage
+    \thispagestyle{empty}
+    \null
+    \clearpage
 }
 
-\newcommand{\divider}{\\ \setlength{\parindent}{0pt}\textcolor{black!30}{\rule{\linewidth}{0.6pt}}\smallskip\setlength{\parindent}{1.5em}\\}
+\newcommand{\textdash}{\enspace\textemdash\enspace}
+\newcommand{\divider}{\setlength{\parindent}{0pt}\textcolor{black!30}{\rule{\linewidth}{0.6pt}}\smallskip\setlength{\parindent}{1.5em}}
 \newcommand{\Acomment}[1]{\textquotedblleft \textit{#1}\textquotedblright}
 \renewcommand\vec{\boldsymbol}
 
@@ -115,7 +117,7 @@
     rightline=false,
     bottomline=false,
     linewidth=3pt,
-    font=\normalize,
+    font=\normalfont,
     innerleftmargin=15pt,
     innerrightmargin=0pt,
     skipabove=\baselineskip,
@@ -128,7 +130,7 @@
     rightline=false,
     bottomline=false,
     linewidth=3pt,
-    font=\normalize,
+    font=\normalfont,
     innerleftmargin=15pt,
     innerrightmargin=0pt,
     skipabove=\baselineskip,
@@ -145,7 +147,25 @@
 \newcommand{\successicon}{\faCheckCircle}
 \newcommand{\dangericon}{\faTimesCircle}
 
-\newtcolorbox[auto counter, number within=chapter]{callout}[3]{
+% Function to map icon names to icon commands
+\newcommand{\geticon}[1]{%
+  \ifstrequal{#1}{info}{\infoicon}{%
+  \ifstrequal{#1}{tip}{\tipicon}{%
+  \ifstrequal{#1}{faq}{\faqicon}{%
+  \ifstrequal{#1}{success}{\successicon}{%
+  \ifstrequal{#1}{danger}{\dangericon}{\faInfoCircle}% default icon
+}}}}}
+
+% Function to map environment names to colors
+\newcommand{\getcolor}[1]{%
+  \ifstrequal{#1}{info}{blue}{%
+  \ifstrequal{#1}{faq}{orange}{%
+  \ifstrequal{#1}{danger}{red}{%
+  \ifstrequal{#1}{success}{green}{%
+  \ifstrequal{#1}{tip}{cyan}{blue}% default color
+}}}}}
+
+\newtcolorbox[auto counter, number within=chapter]{calloutbox}[3]{
     colback=#1!25,
     colbacktitle=#1!25,
     arc=3pt,
@@ -153,58 +173,97 @@
     enhanced,
     left=10pt,
     right=10pt,
-    top=4.5pt,
     bottom=4.5pt,
+    top=4.5pt,
     breakable,
-    label=#2,
     before skip=0.5cm,
     after skip=0.5cm,
-    toptitle=4pt,
+    toptitle=5pt,
+    label=#2,
     fonttitle=\bfseries\large,
     title=\color{#1}{#3}
 }
 
-\newenvironment{info}[3][Info]{
-    \begin{callout}{blue}{#1}{\infoicon \hspace{0.2cm} #2}
-        #3
-}{
-    \end{callout}
-}
+\newcounter{calloutinfo}[chapter]
+\newcounter{calloutfaq}[chapter]
+\newcounter{calloutdanger}[chapter]
+\newcounter{calloutsuccess}[chapter]
+\newcounter{callouttip}[chapter]
 
-\newenvironment{tip}[3][Tip]{
-    \begin{callout}{cyan}{#1}{\tipicon \hspace{0.2cm} #2}
-        #3
-}{
-    \end{callout}
-}
+\NewDocumentEnvironment{callout}{D<>{info} o d || b}{
+    % Assign color and counter prefix dynamically
+    \ifstrequal{#1}{info}{%
+        \def\calloutcolor{blue}%
+        \def\calloutcounterprefix{calloutinfo}%
+        \def\calloutprefix{I}%
+    }{
+    \ifstrequal{#1}{faq}{%
+        \def\calloutcolor{orange}%
+        \def\calloutcounterprefix{calloutfaq}%
+        \def\calloutprefix{F}%
+    }{
+    \ifstrequal{#1}{danger}{%
+        \def\calloutcolor{red}%
+        \def\calloutcounterprefix{calloutdanger}%
+        \def\calloutprefix{D}%
+    }{
+    \ifstrequal{#1}{success}{%
+        \def\calloutcolor{green}%
+        \def\calloutcounterprefix{calloutsuccess}%
+        \def\calloutprefix{S}%
+    }{
+    \ifstrequal{#1}{tip}{%
+        \def\calloutcolor{cyan}%
+        \def\calloutcounterprefix{callouttip}%
+        \def\calloutprefix{T}%
+    }{
+        \def\calloutcolor{blue} % Default color
+        \def\calloutcounterprefix{calloutinfo}%
+        \def\calloutprefix{C}%
+    }}}}}
 
-%\newenvironment{success}[3][Tip]{
-%    \begin{callout}{green}{#1}{\successicon \hspace{0.2cm} #2}
-%        #3
-%}{
-%    \end{callout}
-%}
+    % Default callout title
+    \IfValueTF{#2} {
+        \def\callouttitle{#2}
+    }{
+        \def\callouttitle{\capitalisewords{#1}}
+    }
 
-\newenvironment{faq}[3][Faq]{
-    \begin{callout}{orange}{#1}{\faqicon \hspace{0.2cm} #2}
-        #3
-}{
-    \end{callout}
-}
+    % Handle label: Increment counter only if a label is provided
+    \IfValueTF{#3}{
+        \refstepcounter{\calloutcounterprefix} % Dynamically reference counter
+        \def\calloutlabel{#3}
+        \edef\calloutcounter{\calloutprefix.\thechapter.\arabic{\calloutcounterprefix}} % Format label
+        \label{#3} % Attach label to the counter
+    }{
+        \def\calloutcounter{} % No counter for unlabeled callouts
+        \def\calloutlabel{}
+    }
 
-\newenvironment{danger}[3][Faq]{
-    \begin{callout}{red}{#1}{\dangericon \hspace{0.2cm} #2}
-        #3
-}{
-    \end{callout}
+    % Callout box display logic
+    \IfValueTF{#3}{ % If labeled, include counter
+        \begin{calloutbox}{\calloutcolor}{\calloutlabel}{\geticon{#1} \hspace{0.15pt} \calloutcounter \hspace{0.1cm} \callouttitle}
+    }{
+        \begin{calloutbox}{\calloutcolor}{\calloutlabel}{\geticon{#1} \hspace{0.15pt} \callouttitle}
+    }
+    #4
+    \end{calloutbox}
 }
 
 % Numbering
+\renewcommand{\thecalloutinfo}{I.\thechapter.\arabic{calloutinfo}}
+\renewcommand{\thecalloutfaq}{F.\thechapter.\arabic{calloutfaq}}
+\renewcommand{\thecalloutdanger}{CD.\thechapter.\arabic{calloutdanger}}
+\renewcommand{\thecalloutsuccess}{S.\thechapter.\arabic{calloutsuccess}}
+\renewcommand{\thecallouttip}{CT.\thechapter.\arabic{callouttip}}
 \renewcommand{\theequation}{E.\thechapter.\arabic{equation}}
 \renewcommand{\thetable}{T.\thechapter.\arabic{table}}
 \renewcommand{\thefigure}{F.\thechapter.\arabic{figure}}
 \renewcommand{\thedefinition}{D.\thechapter.\arabic{definition}}
+\renewcommand{\thetheorem}{T.\thechapter.\arabic{theorem}}
 % \renewcommand{\thelisting}{C.\thechapter.\arabic{listing}}
+
+\newcommand{\laxidian}{LaXidiaN }
 
 %%%%%%%%%%%%%%%
 
@@ -227,29 +286,64 @@
 \titleformat{\chapter}[hang]{\Huge\bfseries}{\selectfont \thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
 
 \setcounter{tocdepth}{3}
-\setcounter{secnumdepth}{4}
+\setcounter{secnumdepth}{3}
+
+% Cover Page
+\newcommand{\university}{University of Pisa}
+\newcommand{\department}{Computer Science Department}
+\newcommand{\degree}{Master Degree Course}
+\newcommand{\course}{Name of the Course}
+\newcommand{\authorname}{Name Surname}
+\newcommand{\academicyear}{Academic Year 2022-2023}
+
+\newcommand{\coverpage}{
+    \begin{titlepage}
+    \changepage{}{}{}{}{}{}{}{}{}
+    \begin{center}
+    \includegraphics [width=.2\columnwidth, angle=0]{cover/stemma}\\ % height
+    \vspace{1cm}
+    {\LARGE \textbf{\textrm{\textsc{\university}}}}\\
+    \vspace{0.5cm}
+    {\Large \scshape \textrm{\textbf{\department}}}\\
+    \vspace{0.5cm}
+    {\Large \scshape \textrm{\textbf{\degree}}} \\
+    \vspace{5cm}
+    {\Huge \bfseries \course} \\
+    \vspace{5cm}
+    {\large \textbf{\textrm{\textsc{Author}}}: \textrm{\textsc{\authorname}}} \\
+    \vspace{2cm}
+    {\small \academicyear} \\
+    \end{center}
+    \end{titlepage}
+}
 
 % Front Matter
 \AtBeginDocument {
+    \coverpage
+    \blankpage
     \begingroup
-        \pagenumbering{roman}
-        \phantomsection
-        \addcontentsline{toc}{chapter}{Table of Contents}
-        \tableofcontents
-        \blankpage
+    \pagenumbering{roman}
+    \phantomsection
+    \addcontentsline{toc}{chapter}{Table of Contents}
+    \tableofcontents
+    \blankpage
 
-        \phantomsection
-        \addcontentsline{toc}{chapter}{List of Figure}
-        \listoffigures
-        \blankpage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{List of Figure}
+    \listoffigures
+    \blankpage
 
-        \phantomsection
-        \addcontentsline{toc}{chapter}{List of Tables}
-        \listoftables
-        \blankpage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{List of Tables}
+    \listoftables
+    \blankpage
 
-        \printglossary
-        \blankpage
+    \printglossary
+    \blankpage
+
+    \phantomsection
+    \addcontentsline{toc}{chapter}{Bibliography}
+
     \endgroup
     \mainmatter
     \pagestyle{fancy}
